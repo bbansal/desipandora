@@ -12,8 +12,21 @@
 
     <!--                                                               -->
     <!-- Consider inlining CSS to reduce the number of requested files -->
+
     <!--                                                               -->
     <link type="text/css" rel="stylesheet" href="Desipandora_app.css">
+
+ <STYLE type="text/css">
+  BODY {text-align: center}
+  #myytplayer {
+	position: relative;
+	margin: 0 auto;
+	width: 225px;
+	height: 144px;
+}
+
+}
+ </STYLE>
 
     <!--                                           -->
     <!-- Any title is fine                         -->
@@ -22,6 +35,7 @@
     
     <!--                                           -->
     <!-- This script loads your compiled module.   -->
+
     <!-- If you add any GWT meta tags, they must   -->
     <!-- be added before this line.                -->
     <!--                                          
@@ -41,6 +55,7 @@
       </script> 
       
   </head>
+
  
   <!--                                           -->
   <!-- The body can have arbitrary html, or      -->
@@ -57,8 +72,9 @@
     <table align="center">
       <tr align="center">
          <td>
-            <input type="text" size="60" id="searchTextid" value=""/>
+            <input type="text" size="60" id="searchTextid" value="" onKeyPress="return submitenter(this,event)"/>
             <a href="javascript:void(0)" onclick="loadNewSearch(document.getElementById('searchTextid').value)"> Search </a>
+
          </td>
       </tr>
       <tr>
@@ -71,13 +87,12 @@
         </td>
       <tr>
       </tr>
-      <tr align="center">
-        <td id="ytapiplayer" align="center">
-                You need Flash player 8+ and JavaScript enabled to view this video.
-        </td>
-      </tr>
-      <tr>  
-        <td>
+      </table>
+
+      <div id="ytapiplayer">
+                You need Flash player 8+ and JavaScript enabled to view this video. 
+     </div>
+
             <script type="text/javascript">
                 // <![CDATA[
                 
@@ -85,7 +100,8 @@
                 // domain to access the swf on the youtube domain
                 var params = {
                     allowScriptAccess: "always",
-                    bgcolor: "#cccccc"
+                    bgcolor: "#cccccc",
+                    align: "left"
                 };
                 // this sets the id of the object or embed tag to 'myytplayer'.
                 // You then use this id to access the swf and make calls to the player's API
@@ -98,12 +114,13 @@
                 // lets initiate a search with some keyword.
                 loadNewSearch("dil se chaiya chaiya");
             </script>
-         </td>
-      </tr>
+     <div align="center">
+     <table>
       <tr align="center">
           <td>
             <!-- HTML below here is for display of the player info + state -->
                 Title: <span id="title">--</span>
+
           </td> 
       </tr>
       <tr align="center">    
@@ -112,10 +129,16 @@
             | <a href="javascript:void(0);" onclick="pause();">Pause</a>
             | <a href="javascript:void(0);" onclick="playNext();">Next</a>
             | <a href="javascript:void(0);" onclick="stop();">Stop</a>
-           <!-- | <a href="javascript:void(0);" onclick="playPrev();">Prev</a>
-           -->
+            | <a href="javascript:void(0);" onclick="playPrev();">Prev</a>  
           </td>  
       </tr>
+      <tr align="center">
+        <td>
+                <span id="errorMsg"></span>
+        </td>
+      </tr>
     </table>
+    </div>
+
   </body>
 </html>
