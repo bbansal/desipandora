@@ -1,0 +1,121 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- The HTML 4.01 Transitional DOCTYPE declaration-->
+<!-- above set at the top of the file will set     -->
+<!-- the browser's rendering engine into           -->
+<!-- "Quirks Mode". Replacing this declaration     -->
+<!-- with a "Standards Mode" doctype is supported, -->
+<!-- but may lead to some differences in layout.   -->
+
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+    <!--                                                               -->
+    <!-- Consider inlining CSS to reduce the number of requested files -->
+    <!--                                                               -->
+    <link type="text/css" rel="stylesheet" href="Desipandora_app.css">
+
+    <!--                                           -->
+    <!-- Any title is fine                         -->
+    <!--                                           -->
+    <title>DesiPandora: Songs recommendation for hindi, bollywood, indian songs.</title>
+    
+    <!--                                           -->
+    <!-- This script loads your compiled module.   -->
+    <!-- If you add any GWT meta tags, they must   -->
+    <!-- be added before this line.                -->
+    <!--                                          
+    <script type="text/javascript" language="javascript" src="desipandora_app/desipandora_app.nocache.js"></script>
+    -->
+    
+        <!-- Use the Google AJAX Libraries API:
+        http://code.google.com/apis/ajaxlibs/ -->
+        <script src="http://www.google.com/jsapi">
+        </script>
+        
+         <script>
+            google.load("swfobject", "2.1");
+        </script>
+        
+      <script type="text/javascript" language="javascript" src="static/java/DesiPandora.js">
+      </script> 
+      
+  </head>
+ 
+  <!--                                           -->
+  <!-- The body can have arbitrary html, or      -->
+  <!-- you can leave the body empty if you want  -->
+  <!-- to create a completely dynamic UI.        -->
+  <!--                                           -->
+  <body>
+
+    <!-- OPTIONAL: include this if you want history support -->
+    <iframe src="javascript:''" id="__gwt_historyFrame" tabIndex='-1' style="position:absolute;width:0;height:0;border:0"></iframe>
+
+    <h1>Search songs you love and listen ...</h1>
+
+    <table align="center">
+      <tr align="center">
+         <td>
+            <input type="text" size="60" id="searchTextid" value=""/>
+            <a href="javascript:void(0)" onclick="loadNewSearch(document.getElementById('searchTextid').value)"> Search </a>
+         </td>
+      </tr>
+      <tr>
+        <td>
+        &nbsp;
+        </td>
+      </tr>
+        <td>
+        &nbsp;
+        </td>
+      <tr>
+      </tr>
+      <tr align="center">
+        <td id="ytapiplayer" align="center">
+                You need Flash player 8+ and JavaScript enabled to view this video.
+        </td>
+      </tr>
+      <tr>  
+        <td>
+            <script type="text/javascript">
+                // <![CDATA[
+                
+                // allowScriptAccess must be set to allow the Javascript from one 
+                // domain to access the swf on the youtube domain
+                var params = {
+                    allowScriptAccess: "always",
+                    bgcolor: "#cccccc"
+                };
+                // this sets the id of the object or embed tag to 'myytplayer'.
+                // You then use this id to access the swf and make calls to the player's API
+                var atts = {
+                    id: "myytplayer"
+                };
+                swfobject.embedSWF("http://www.youtube.com/v/JtDBs7ONbkI?border=0&amp;enablejsapi=1&amp;playerapiid=ytplayer&amp;autoplay=0&amp;fs=1", "ytapiplayer", "225", "144", "8", null, null, params, atts);
+                //]]>
+                
+                // lets initiate a search with some keyword.
+                loadNewSearch("dil se chaiya chaiya");
+            </script>
+         </td>
+      </tr>
+      <tr align="center">
+          <td>
+            <!-- HTML below here is for display of the player info + state -->
+                Title: <span id="title">--</span>
+          </td> 
+      </tr>
+      <tr align="center">    
+         <td> 
+            <a href="javascript:void(0);" onclick="play();">Play</a>
+            | <a href="javascript:void(0);" onclick="pause();">Pause</a>
+            | <a href="javascript:void(0);" onclick="playNext();">Next</a>
+            | <a href="javascript:void(0);" onclick="stop();">Stop</a>
+           <!-- | <a href="javascript:void(0);" onclick="playPrev();">Prev</a>
+           -->
+          </td>  
+      </tr>
+    </table>
+  </body>
+</html>
