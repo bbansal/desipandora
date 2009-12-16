@@ -45,8 +45,9 @@ import com.marketsenti.storage.StorageEngine;
  * 
  */
 public class DesiPandoraServiceYouTube implements DesiPandoraService {
-	
-	private static Logger logger = Logger.getLogger(DesiPandoraServiceYouTube.class);
+
+	private static Logger logger = Logger
+			.getLogger(DesiPandoraServiceYouTube.class);
 	private StorageEngine storage;
 	private String storeName;
 	private YouTubeService service;
@@ -158,8 +159,6 @@ public class DesiPandoraServiceYouTube implements DesiPandoraService {
 					SongEntry songEntry = new SongEntry(videoEntry.getId(),
 							SongEntryType.YOUTUBE);
 					CopyVideoEntryToSongEntry(videoEntry, songEntry);
-					System.out.println("First Title : " + songEntry.getTitle()
-							+ " link : " + songEntry.getRelatedFeedString());
 					songEntryList.add(songEntry);
 					sessionEntry.addPlayListToSession(new PlayList(
 							songEntryList, 0, 1));
@@ -419,12 +418,12 @@ public class DesiPandoraServiceYouTube implements DesiPandoraService {
 			Set<String> seedSongSet = seedSongEntry.getTitleWordsSet();
 			Set<String> intersection = new HashSet<String>(seedSongSet);
 			intersection.retainAll(titleWordsSet);
-			double score = (intersection.size() + 1)
+			double score = (intersection.size() + 1.0)
 					/ ((Math.min(seedSongEntry.getTitleWordsSet().size(),
-							titleWordsSet.size())) + 1);
+							titleWordsSet.size())) + 1.0);
 			if (score > 0.5) {
 				System.out.println("DISCARD : '" + songEntry.getTitle()
-						+ "' MATCHES '" + seedSongEntry.getTitle() + "'");
+						+ "' MATCHES '" + seedSongEntry.getTitle() + "' SCORE:" + score);
 				return true;
 			}
 		}

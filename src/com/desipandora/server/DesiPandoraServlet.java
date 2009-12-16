@@ -103,7 +103,7 @@ public class DesiPandoraServlet extends HttpServlet {
 		String sessionId = req.getParameter(USER_SESSION_ID);
 					
 		String numSongString = (null != req.getParameter(NUM_SONGS)) ? req
-				.getParameter(NUM_SONGS) : "10";
+				.getParameter(NUM_SONGS) : "15";
 		int numSongs = Integer.parseInt(numSongString);
 
 		if (null == sessionId)
@@ -141,7 +141,7 @@ public class DesiPandoraServlet extends HttpServlet {
 		sessionId = _service.createSessionId("defaultUser");
 			
 		String numSongString = (null != req.getParameter(NUM_SONGS)) ? req
-				.getParameter(NUM_SONGS) : "15";
+				.getParameter(NUM_SONGS) : "25";
 		int numSongs = Integer.parseInt(numSongString);
 
 		if (null == keywordString || null == sessionId)
