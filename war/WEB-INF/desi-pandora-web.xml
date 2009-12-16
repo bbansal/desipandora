@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE web-app
+    PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+    "http://java.sun.com/dtd/web-app_2_3.dtd">
+
+<web-app>
+  
+  <!-- Servlets -->  
+  <servlet>
+    <servlet-name>log4j-init</servlet-name>
+    <servlet-class>com.desipandora.server.Log4jServlet</servlet-class>
+    <init-param>
+      <param-name>log4j-file</param-name>
+      <param-value>WEB-INF/logging.properties</param-value>
+    </init-param>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  
+  
+  <servlet>
+    <servlet-name>desipandoraServlet</servlet-name>
+    <servlet-class>com.desipandora.server.DesiPandoraServlet</servlet-class>
+  </servlet>
+      
+  <servlet-mapping>
+    <servlet-name>desipandoraServlet</servlet-name>
+    <url-pattern>/DesiPandora.html/api</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+    <servlet-name>desipandoraServlet</servlet-name>
+    <url-pattern>/api</url-pattern>
+  </servlet-mapping>
+  
+  <!-- Default page to serve -->
+  <welcome-file-list>
+    <welcome-file>DesiPandora.html</welcome-file>
+  </welcome-file-list>    
+</web-app>
