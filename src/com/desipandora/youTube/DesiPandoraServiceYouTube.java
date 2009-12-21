@@ -303,7 +303,6 @@ public class DesiPandoraServiceYouTube implements DesiPandoraService {
 			    	break;
 			    }
 			}
-			songEntry.setDuration(140);
 		} catch (Exception e) {
 			// TODO : fix me ignore
 		}
