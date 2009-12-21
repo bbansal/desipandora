@@ -3,11 +3,14 @@
  */
 package com.desipandora.sessionInfo;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.desipandora.client.SongEntry;
 
@@ -20,7 +23,8 @@ public class SessionEntry {
 	long timeStamp;
 	Map<String, SongFeedbackEntry> songFeedbackEntryMap;
 	PlayList playList;
-	
+	//final String[]  blackList = {"trailer", "movie", "making", "karaoke", "sings", "teaser", "promo", "scene"}; 
+    private Set<String> blackListSet; 
 	
 
 	public SessionEntry(String userId) {
@@ -29,6 +33,10 @@ public class SessionEntry {
 		this.songFeedbackEntryMap = new HashMap<String, SongFeedbackEntry>();
 		this.timeStamp = (new Date()).getTime();
 		this.playList = new PlayList();
+		String[] temp = {"trailer", "movie", "making", "karaoke", "sings", "teaser", "promo", 
+						 "scene", "hot", "nude", "porn", "webcam", "interview", "guitar", "funny",
+						 "documentary", "contest", "audition"};
+		this.blackListSet = new HashSet<String>(Arrays.asList(temp));
 	}
 
 	public void addPlayListToSession(PlayList playList){
@@ -64,6 +72,10 @@ public class SessionEntry {
 
 	public void setPlayList(PlayList playList) {
 		this.playList = playList;
+	}
+	
+	public Set<String> getBlackListSet(){
+		return blackListSet;
 	}
 	
 	public void printPlayList(){

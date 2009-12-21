@@ -16,7 +16,7 @@ public class PlayList {
 	private List<SongEntry> playList;
 	private int indexRelatedFeedSeed;
 	private int indexNextRecommendation;
-	
+ 	
 	public PlayList(){
 		this.playList = new ArrayList<SongEntry>();
 		this.indexRelatedFeedSeed = -1;
@@ -26,7 +26,7 @@ public class PlayList {
 	public List<SongEntry> getPlayList() {
 		return playList;
 	}
-	
+
 	public PlayList(List<SongEntry> playList, int indexRelatedFeedSeed, int indexNextRecommendation) {
 		this.playList = new ArrayList<SongEntry>();
 		this.playList.addAll(playList);

@@ -52,6 +52,8 @@ public class DesiPandoraServiceYouTube implements DesiPandoraService {
 	private String storeName;
 	private YouTubeService service;
 	private String serviceName;
+	private final int DURATION_THRESHOLD = 120;
+	private final double SCORE_THRESHOLD = 0.5;
 
 	// Play Session specific info
 	// private List<VideoEntry> playList;
@@ -155,7 +157,7 @@ public class DesiPandoraServiceYouTube implements DesiPandoraService {
 				}
 
 				if (null != videoEntry) {
-					// printVideoEntry(videoEntry, true);
+					//printVideoEntry(videoEntry, true);
 					SongEntry songEntry = new SongEntry(videoEntry.getId(),
 							SongEntryType.YOUTUBE);
 					CopyVideoEntryToSongEntry(videoEntry, songEntry);
@@ -185,6 +187,7 @@ public class DesiPandoraServiceYouTube implements DesiPandoraService {
 	}
 
 	private boolean isValidYoutubeVideo(VideoEntry videoEntry) {
+		
 		return videoEntry.isEmbeddable();
 	}
 
@@ -280,6 +283,7 @@ public class DesiPandoraServiceYouTube implements DesiPandoraService {
 	private void CopyVideoEntryToSongEntry(VideoEntry videoEntry,
 			SongEntry songEntry) {
 		try {
+			//printVideoEntry(videoEntry, true);
 			songEntry.setTitle(videoEntry.getTitle().getPlainText()
 					.toLowerCase());
 			songEntry.setRelatedFeedString(videoEntry.getRelatedVideosLink()
@@ -291,6 +295,15 @@ public class DesiPandoraServiceYouTube implements DesiPandoraService {
 			MediaKeywords keywords = mediaGroup.getKeywords();
 			songEntry.setKeyWords(keywords.getKeywords());
 			songEntry.setYouTubeRating(videoEntry.getRating().getAverage());
+			
+			for (YouTubeMediaContent mediaContent : mediaGroup
+					.getYouTubeContents()) {
+			    if(mediaContent.getType().equals("application/x-shockwave-flash")){
+			    	songEntry.setDuration(mediaContent.getDuration());
+			    	break;
+			    }
+			}
+			songEntry.setDuration(140);
 		} catch (Exception e) {
 			// TODO : fix me ignore
 		}
@@ -310,10 +323,12 @@ public class DesiPandoraServiceYouTube implements DesiPandoraService {
 					sessionId);
 			SessionEntry sessionEntry = null;
 			PlayList sessionPlayList = new PlayList();
+			Set<String> sessionBlackList = null;
 			if (iterStorage.hasNext()) {
 				sessionEntry = (SessionEntry) (storage.getValues(storeName,
 						sessionId).next());
 				sessionPlayList = sessionEntry.getPlayList();
+				sessionBlackList = sessionEntry.getBlackListSet();
 			} else {
 				throw new RuntimeException("No Entries exist in storemane "
 						+ storeName);
@@ -350,7 +365,7 @@ public class DesiPandoraServiceYouTube implements DesiPandoraService {
 					&& (seedPlayList.size() > counterNextSeed)) {
 
 				SongEntry seedSongEntry = seedPlayList.get(counterNextSeed);
-				System.out.println("SEED : " + seedSongEntry.getTitle());
+				System.out.println("\nSEED : " + seedSongEntry.getTitle());
 				if (seedSongEntry.getRelatedFeedString() != "") {
 					String feedString = seedSongEntry.getRelatedFeedString();
 					try {
@@ -359,7 +374,7 @@ public class DesiPandoraServiceYouTube implements DesiPandoraService {
 
 						for (VideoEntry loopVideoEntry : relatedVideoFeed
 								.getEntries()) {
-
+							
 							if (isValidYoutubeVideo(loopVideoEntry)) {
 
 								SongEntry songEntry = new SongEntry(
@@ -367,12 +382,18 @@ public class DesiPandoraServiceYouTube implements DesiPandoraService {
 										SongEntryType.YOUTUBE);
 								CopyVideoEntryToSongEntry(loopVideoEntry,
 										songEntry);
+								boolean isUserVideo = FindBlackListedWords(songEntry, sessionBlackList);
 								boolean isDuplicate = FindSimilar(songEntry,
 										seedPlayList);
-								// boolean isDuplicate = false;
-								if (!isDuplicate) {
+								boolean isDurationValid = (songEntry.getDuration() <= DURATION_THRESHOLD);
+								boolean discardVideo = (isUserVideo || isDuplicate || isDurationValid);
+								if (!discardVideo) {
+									System.out.println("ADD : "+songEntry.getTitle());
 									songEntryList.add(songEntry);
 									seedPlayList.add(songEntry);
+								}
+								else{
+									System.out.println("DISCARD : "+songEntry.getTitle());
 								}
 								// System.out.println("Song Info : Title "+loopVideoEntry.getTitle().getPlainText()+" relatedVideoLink "+loopVideoEntry.getRelatedVideosLink().getHref());
 							}
@@ -406,6 +427,40 @@ public class DesiPandoraServiceYouTube implements DesiPandoraService {
 		}
 	}
 
+	private boolean FindBlackListedWords(SongEntry songEntry, Set<String> sessionBlackList) {
+		// TODO Auto-generated method stub
+		Set<String> titleWordsSet = new HashSet<String>(songEntry
+				.getTitleWordsSet());
+		
+//		System.out.println("titleWords = ");
+//		for ( String s : titleWordsSet ) {
+//			System.out.print(s + " ");
+//		}
+//		System.out.println();
+		
+		Set<String> intersection = new HashSet<String>(sessionBlackList);
+
+//		System.out.print("intersection = ");
+//		for ( String s : intersection ) {
+//			System.out.print(s + " ");
+//		}
+//		System.out.println();
+//		
+//		System.out.println("Size of intersection(before) is "+ intersection.size());
+//		
+		intersection.retainAll(titleWordsSet);
+//		System.out.println("Size of intersection is "+ intersection.size());
+		if(intersection.isEmpty()){
+			return false;
+		}
+		else {
+			System.out.println("BLACKLISTED : '"+songEntry.getTitle() + "'");
+			return true;
+		} 
+	}
+
+	
+	
 	private boolean FindSimilar(SongEntry songEntry,
 			List<SongEntry> seedPlayList) {
 		// TODO Auto-generated method stub
@@ -421,13 +476,14 @@ public class DesiPandoraServiceYouTube implements DesiPandoraService {
 			double score = (intersection.size() + 1.0)
 					/ ((Math.min(seedSongEntry.getTitleWordsSet().size(),
 							titleWordsSet.size())) + 1.0);
-			if (score > 0.5) {
-				System.out.println("DISCARD : '" + songEntry.getTitle()
-						+ "' MATCHES '" + seedSongEntry.getTitle() + "' SCORE:" + score);
+			if (score > SCORE_THRESHOLD) {
+//				System.out.println("DISCARD : '" + songEntry.getTitle()
+//						+ "' MATCHES '" + seedSongEntry.getTitle() + "' SCORE:" + score);
+				System.out.println("'"+songEntry.getTitle()+"' MATCHES '"+seedSongEntry.getTitle()+"'  SCORE: "+score);
 				return true;
 			}
 		}
-		System.out.println("ADD : '" + songEntry.getTitle() + "'");
+		//System.out.println("ADD : '" + songEntry.getTitle() + "'");
 		return false;
 	}
 }

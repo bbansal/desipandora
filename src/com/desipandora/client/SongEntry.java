@@ -21,8 +21,23 @@ public class SongEntry
   private String          relatedFeedString;
   private SongEntryType type;
   private Set<String> titleWordsSet;
+  private int duration;
 
-  public String getDescription() {
+  /**
+ * @return the duration
+ */
+public int getDuration() {
+	return duration;
+}
+
+/**
+ * @param duration the duration to set
+ */
+public void setDuration(int duration) {
+	this.duration = duration;
+}
+
+public String getDescription() {
 	return Description;
 }
 
@@ -79,9 +94,8 @@ public String getSongId()
   public void setTitle(String title)
   {
     this.title = title;
-    String trimmedTitle = this.title.replaceAll("[^A-Za-z-_ ]", "");
-    String[] splittedTitle = trimmedTitle.split("[\\s|_|-]+");
-    
+    String trimmedTitle = this.title.replaceAll("[^A-Za-z0-9 ]", " ");
+    String[] splittedTitle = trimmedTitle.split("[\\s]+");
     for(int i = 0; i<splittedTitle.length; i++){
     	//System.out.println("TOKENS : "+splittedTitle[i]);
     	titleWordsSet.add(splittedTitle[i]);
